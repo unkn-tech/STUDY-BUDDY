@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyBuddy - Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3e5f5; /* Light purple background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent white container */
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 6px 10px -2px rgba(0, 0, 0, 0.15), 0 3px 7px -3px rgba(0, 0, 0, 0.07);
+            width: 60%; /* Further reduced width */
+            max-width: 240px; /* Further reduced max-width */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .container:hover {
+            transform: translateY(-0.5rem);
+            box-shadow: 0 8px 12px -2px rgba(0, 0, 0, 0.2), 0 4px 8px -4px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-title {
+            font-size: 2rem; /* Slightly reduced font size */
+            font-weight: 700;
+            color: #9c27b0; /* Deep purple */
+            margin-bottom: 1.5rem; /* Reduced margin */
+            text-align: center;
+            letter-spacing: -0.02em;
+        }
+
+        .input-group {
+            margin-bottom: 1rem; /* Reduced margin */
+        }
+
+        .input-label {
+            display: block;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #7e57c2; /* Light deep purple */
+            margin-bottom: 0.75rem;
+            transition: color 0.3s ease;
+        }
+
+        .input-label:hover {
+            color: #9c27b0; /* Deep purple on hover */
+        }
+
+        .text-input, .password-input {
+            width: 100%;
+            padding: 0.6rem; /* Reduced padding */
+            border-radius: 0.75rem;
+            border: 2px solid #d1c4e9; /* Light purple border */
+            font-size: 1rem; /* Slightly reduced font size */
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            background-color: rgba(255, 255, 255, 0.8); /* Slightly transparent input background */
+            color: #5e35b1; /* Medium purple text */
+        }
+
+        .text-input:focus, .password-input:focus {
+            outline: none;
+            border-color: #9c27b0; /* Deep purple focus border */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .error-message {
+            color: #e91e63; /* Pink error message */
+            font-size: 0.95rem;
+            margin-top: 0.75rem;
+            display: none; /* Initially hidden */
+        }
+
+        .error-message.visible {
+            display: block; /* Show error message */
+        }
+
+        .primary-button {
+            background-image: linear-gradient(to right, #9c27b0, #e91e63); /* Deep purple to pink gradient */
+            color: white;
+            padding: 0.8rem 2rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            transition: background-image 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            font-size: 1.2rem;
+            box-shadow: 0 6px 10px -2px rgba(0, 0, 0, 0.15), 0 3px 7px -3px rgba(0, 0, 0, 0.07);
+            border: none;
+        }
+
+        .primary-button:hover {
+            background-image: linear-gradient(to right, #7b1fa2, #c2185b); /* Darker purple to pink on hover */
+            transform: translateY(-0.35rem);
+            box-shadow: 0 8px 12px -2px rgba(0, 0, 0, 0.2), 0 4px 8px -4px rgba(0, 0, 0, 0.1);
+        }
+
+        .switch-form-text {
+            font-size: 1rem;
+            color: #7e57c2; /* Light deep purple */
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        .switch-form-link {
+            color: #9c27b0; /* Deep purple */
+            font-weight: 600;
+            text-decoration: underline;
+            transition: color 0.3s ease;
+        }
+
+        .switch-form-link:hover {
+            color: #e91e63; /* Pink on hover */
+        }
+
+        .form-group {
+            margin-bottom: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 class="form-title">Login</h2>
+        <form id="login-form" class="form-group active">
+            <div class="input-group">
+                <label for="login-email" class="input-label">Email</label>
+                <input type="email" id="login-email" class="text-input" placeholder="Enter your email" required>
+                <div id="login-email-error" class="error-message">Please enter a valid email address.</div>
+            </div>
+            <div class="input-group">
+                <label for="login-password" class="input-label">Password</label>
+                <input type="password" id="login-password" class="password-input" placeholder="Enter your password" required>
+                <div id="login-password-error" class="error-message">Password must be at least 8 characters long.</div>
+            </div>
+            <button type="submit" class="primary-button">Login</button>
+            <div class="switch-form-text">
+                Don't have an account? <a href="signup.html" class="switch-form-link">Sign up</a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const loginForm = document.getElementById('login-form');
+
+        function validateEmail(email) {
+            const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+            return emailRegex.test(email);
+        }
+
+        function validatePassword(password) {
+            return password.length >= 8;
+        }
+
+
+        loginForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+
+            const emailInput = document.getElementById('login-email');
+            const passwordInput = document.getElementById('login-password');
+            const emailError = document.getElementById('login-email-error');
+            const passwordError = document.getElementById('login-password-error');
+
+            let isValid = true;
+
+            if (!validateEmail(emailInput.value)) {
+                emailError.classList.add('visible');
+                isValid = false;
+            } else {
+                emailError.classList.remove('visible');
+            }
+
+            if (!validatePassword(passwordInput.value)) {
+                passwordError.classList.add('visible');
+                isValid = false;
+            } else {
+                passwordError.classList.remove('visible');
+            }
+
+            if (isValid) {
+                // Redirect to welcome page on successful login
+                window.location.href = 'welcome.html';
+            }
+        });
+    </script>
+</body>
+</html>

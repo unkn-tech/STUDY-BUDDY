@@ -1,0 +1,2111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyBuddy - Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3e5f5;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: white;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            padding: 2rem 1rem;
+        }
+
+        .sidebar-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #9c27b0;
+            margin-bottom: 2rem;
+            padding: 0 1rem;
+        }
+
+        .nav-item {
+            padding: 1rem;
+            margin: 0.5rem 0;
+            border-radius: 0.5rem;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-item:hover {
+            background-color: #f3e5f5;
+            color: #9c27b0;
+        }
+
+        .nav-item.active {
+            background-color: #9c27b0;
+            color: white;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 2rem;
+            width: calc(100% - 250px);
+        }
+
+        .welcome-container {
+            text-align: center;
+            max-width: 600px;
+            padding: 2rem;
+        }
+
+        .welcome-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #9c27b0;
+            margin-bottom: 1rem;
+        }
+
+        .welcome-message {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .start-button {
+            background-color: #9c27b0;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 0.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .start-button:hover {
+            background-color: #7b1fa2;
+            transform: translateY(-2px);
+        }
+
+        .features-container {
+            display: none;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background-color: white;
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .timer-display {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #9c27b0;
+            text-align: center;
+            margin: 1rem 0;
+        }
+
+        .timer-controls button {
+            background-color: #9c27b0;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            margin: 0 0.5rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .timer-controls button:hover {
+            background-color: #7b1fa2;
+        }
+
+        .todo-item {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .todo-item input[type="checkbox"] {
+            margin-right: 1rem;
+        }
+
+        .notes-textarea {
+            width: 100%;
+            height: 200px;
+            padding: 1rem;
+            border: 2px solid #d1c4e9;
+            border-radius: 0.5rem;
+            resize: vertical;
+        }
+
+        .resource-link {
+            display: block;
+            padding: 0.5rem;
+            color: #9c27b0;
+            text-decoration: none;
+            border-bottom: 1px solid #eee;
+        }
+
+        .resource-link:hover {
+            background-color: #f3e5f5;
+        }
+
+        .progress-bar {
+            height: 20px;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: #9c27b0;
+            transition: width 0.3s ease;
+        }
+
+        .flashcard {
+            width: 100%;
+            height: 300px; /* Increased height to accommodate controls */
+            transition: all 0.3s ease;
+            transform-style: preserve-3d;
+            cursor: pointer;
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+            background: white;
+            position: relative;
+        }
+
+        .flashcard::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #ff9a9e, #fad0c4, #fad0c4, #a1c4fd, #c2e9fb);
+            background-size: 200% 100%;
+            animation: gradient 3s ease infinite;
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .flashcard:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .flashcard-inner {
+            position: relative;
+            width: 100%;
+            height: 80%; /* Leave space for controls at bottom */
+            text-align: center;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+            cursor: pointer;
+            border-radius: 1.5rem;
+        }
+
+        .flashcard.flipped .flashcard-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-front, .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            border-radius: 1.5rem;
+        }
+
+        .flashcard-front {
+            background: linear-gradient(135deg, #a053df, #e676be);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+        }
+        
+        .flashcard-front::after {
+            content: 'Click to flip';
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+        
+        .flashcard:hover .flashcard-front::after {
+            opacity: 1;
+        }
+
+        .flashcard-back {
+            background: linear-gradient(135deg, #a1c4fd, #c2e9fb);
+            color: #2c3e50;
+            transform: rotateY(180deg);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        .flashcard-back::after {
+            content: 'Click to flip back';
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background-color: rgba(0, 0, 0, 0.1);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+        
+        .flashcard:hover .flashcard-back::after {
+            opacity: 1;
+        }
+
+        .flashcard-content {
+            font-size: 1.2rem;
+            font-weight: 600;
+            line-height: 1.5;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .flashcard-back .flashcard-content {
+            text-shadow: none;
+        }
+
+        .flashcards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            padding: 1.5rem;
+        }
+
+        .control-button {
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 1rem;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 0.8rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .control-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .control-button.delete {
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+        }
+
+        .flashcard-controls {
+            display: flex;
+            justify-content: center;
+            gap: 0.8rem;
+            position: absolute;
+            bottom: 15px;
+            left: 0;
+            right: 0;
+            z-index: 20;
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 0 0 1.5rem 1.5rem;
+        }
+
+        .control-button {
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            min-width: 80px;
+        }
+
+        .control-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .control-button.edit {
+            background: linear-gradient(135deg, #a1c4fd, #c2e9fb);
+            color: #2c3e50;
+        }
+
+        .control-button.delete {
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+        }
+
+        #flashcards-list {
+            width: 100%;
+            perspective: 1000px;
+        }
+
+        .flashcard-navigation {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .nav-button {
+            background: linear-gradient(135deg, #ab47bc, #8e24aa);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 0.5rem;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .nav-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-button:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .notes-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .note-card {
+            background: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .note-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .note-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .note-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #9c27b0;
+        }
+
+        .note-date {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .note-content {
+            color: #333;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .note-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .note-button {
+            padding: 0.3rem 0.8rem;
+            border-radius: 0.5rem;
+            border: none;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+
+        .note-button.edit {
+            background: linear-gradient(135deg, #a053df, #e676be);
+            color: white;
+        }
+
+        .note-button.delete {
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+            color: white;
+        }
+
+        .note-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .quote-container {
+            background: linear-gradient(135deg, #a053df, #e676be);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            margin-top: 1.5rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .quote-container:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .quote-text {
+            font-size: 1.2rem;
+            font-weight: 500;
+            line-height: 1.6;
+            margin-bottom: 0.5rem;
+            font-style: italic;
+        }
+
+        .quote-author {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .quote-refresh {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 0.3rem 0.8rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .quote-refresh:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .study-tips {
+            background: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .study-tips h3 {
+            color: #9c27b0;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .tips-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .tip-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.8rem;
+            padding: 0.8rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .tip-item:last-child {
+            border-bottom: none;
+        }
+
+        .tip-icon {
+            color: #a053df;
+            font-size: 1.2rem;
+            margin-top: 0.2rem;
+        }
+
+        .tip-content {
+            flex: 1;
+        }
+
+        .tip-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.3rem;
+        }
+
+        .tip-description {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-title">StudyBuddy</div>
+        <div class="nav-item active" onclick="showSection('study-session')">
+            Study Session
+        </div>
+        <div class="nav-item" onclick="showSection('flashcards')">
+            Flashcards
+        </div>
+        <div class="nav-item" onclick="showSection('notes')">
+            Notes
+        </div>
+        <div class="nav-item" onclick="showSection('timer')">
+            Timer
+        </div>
+        <div class="nav-item" onclick="showSection('chatbot')">
+            Chatbot
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container">
+            <!-- Study Session Section -->
+            <div id="study-session" class="section">
+                <h1 class="text-3xl font-bold text-center mb-8" style="color: #9c27b0;">Study Session</h1>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Left Column -->
+                    <div>
+                        <!-- Todo List -->
+                        <div class="feature-card">
+                            <h2 class="text-xl font-semibold mb-4">Todo List</h2>
+                            <div class="mb-4">
+                                <input type="text" id="todo-input" placeholder="Add new task" class="w-full p-2 border rounded">
+                                <button onclick="addTodo()" class="mt-2 bg-purple-600 text-white px-4 py-2 rounded">Add Task</button>
+                            </div>
+                            <div id="todo-list" class="max-h-80 overflow-y-auto"></div>
+                        </div>
+                        
+                        <!-- Streak Counter -->
+                        <div class="feature-card mt-6">
+                            <h2 class="text-xl font-semibold mb-4">Study Streak</h2>
+                            <div class="flex items-center justify-center">
+                                <div class="text-center">
+                                    <div class="text-5xl font-bold text-purple-600" id="streak-count">0</div>
+                                    <div class="text-gray-600 mt-2">Days in a row</div>
+                                </div>
+                            </div>
+                            <div class="flex justify-center mt-4">
+                                <button onclick="incrementStreak()" class="bg-purple-600 text-white px-4 py-2 rounded mr-2">Log Today</button>
+                                <button onclick="resetStreak()" class="bg-gray-400 text-white px-4 py-2 rounded">Reset</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Mood Tracker -->
+                        <div class="feature-card mt-6">
+                            <h2 class="text-xl font-semibold mb-4">Mood Tracker</h2>
+                            <div class="mb-4">
+                                <p class="text-gray-600 mb-2">How are you feeling today?</p>
+                                <div class="flex justify-between items-center">
+                                    <button onclick="trackMood('😔')" class="mood-btn text-3xl hover:transform hover:scale-125 transition-transform">😔</button>
+                                    <button onclick="trackMood('😐')" class="mood-btn text-3xl hover:transform hover:scale-125 transition-transform">😐</button>
+                                    <button onclick="trackMood('🙂')" class="mood-btn text-3xl hover:transform hover:scale-125 transition-transform">🙂</button>
+                                    <button onclick="trackMood('😊')" class="mood-btn text-3xl hover:transform hover:scale-125 transition-transform">😊</button>
+                                    <button onclick="trackMood('🤩')" class="mood-btn text-3xl hover:transform hover:scale-125 transition-transform">🤩</button>
+                                </div>
+                            </div>
+                            <div>
+                                <p class="text-gray-600 mb-2">Recent moods:</p>
+                                <div id="mood-history" class="flex flex-wrap gap-2"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Right Column -->
+                    <div>
+                        <!-- Calendar -->
+                        <div class="feature-card">
+                            <h2 class="text-xl font-semibold mb-4">Calendar</h2>
+                            <div id="calendar" class="p-2">
+                                <div class="flex justify-between items-center mb-4">
+                                    <button onclick="prevMonth()" class="text-purple-600 hover:text-purple-800">❮</button>
+                                    <div id="month-year" class="text-lg font-semibold text-purple-600"></div>
+                                    <button onclick="nextMonth()" class="text-purple-600 hover:text-purple-800">❯</button>
+                                </div>
+                                <div class="grid grid-cols-7 gap-1 text-center">
+                                    <div class="text-sm font-medium text-gray-500">Sun</div>
+                                    <div class="text-sm font-medium text-gray-500">Mon</div>
+                                    <div class="text-sm font-medium text-gray-500">Tue</div>
+                                    <div class="text-sm font-medium text-gray-500">Wed</div>
+                                    <div class="text-sm font-medium text-gray-500">Thu</div>
+                                    <div class="text-sm font-medium text-gray-500">Fri</div>
+                                    <div class="text-sm font-medium text-gray-500">Sat</div>
+                                </div>
+                                <div id="calendar-days" class="grid grid-cols-7 gap-1 mt-2"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Motivational Quotes -->
+                        <div class="quote-container mt-6">
+                            <div class="quote-text" id="quote-text"></div>
+                            <div class="quote-author" id="quote-author"></div>
+                            <button onclick="displayRandomQuote()" class="quote-refresh">New Quote</button>
+                        </div>
+                        
+                        <!-- Quick Study Stats -->
+                        <div class="feature-card mt-6">
+                            <h2 class="text-xl font-semibold mb-4">Quick Study Stats</h2>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="bg-purple-50 rounded-lg p-3 text-center">
+                                    <div class="text-3xl font-bold text-purple-600" id="total-study-sessions">0</div>
+                                    <div class="text-sm text-gray-600">Total Sessions</div>
+                                </div>
+                                <div class="bg-purple-50 rounded-lg p-3 text-center">
+                                    <div class="text-3xl font-bold text-purple-600" id="total-study-hours">0</div>
+                                    <div class="text-sm text-gray-600">Hours Studied</div>
+                                </div>
+                                <div class="bg-purple-50 rounded-lg p-3 text-center">
+                                    <div class="text-3xl font-bold text-purple-600" id="completed-tasks">0</div>
+                                    <div class="text-sm text-gray-600">Tasks Completed</div>
+                                </div>
+                                <div class="bg-purple-50 rounded-lg p-3 text-center">
+                                    <div class="text-3xl font-bold text-purple-600" id="current-streak">0</div>
+                                    <div class="text-sm text-gray-600">Current Streak</div>
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <div class="flex justify-between mb-1">
+                                    <span class="text-sm font-medium text-gray-600">Weekly Goal Progress</span>
+                                    <span class="text-sm font-medium text-gray-600" id="goal-percentage">0%</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                    <div class="bg-purple-600 h-2.5 rounded-full" id="goal-progress" style="width: 0%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Flashcards Section -->
+            <div id="flashcards" class="section" style="display: none;">
+                <h1 class="text-3xl font-bold text-center mb-8" style="color: #9c27b0;">Flashcards</h1>
+                <div class="feature-card">
+                    <h2 class="text-xl font-semibold mb-4">Create New Flashcard</h2>
+                    <div class="mb-4">
+                        <input type="text" id="flashcard-question" placeholder="Enter question" class="w-full p-2 border rounded mb-2">
+                        <textarea id="flashcard-answer" placeholder="Enter answer" class="w-full p-2 border rounded mb-2" rows="3"></textarea>
+                        <button onclick="addFlashcard()" class="bg-purple-600 text-white px-4 py-2 rounded">Add Flashcard</button>
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-semibold">Your Flashcards</h2>
+                        <div class="text-sm text-gray-600 bg-purple-100 px-3 py-1 rounded-full">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            Click cards to flip, use buttons to edit or delete
+                        </div>
+                    </div>
+                    <div id="flashcards-list"></div>
+                </div>
+            </div>
+
+            <!-- Notes Section -->
+            <div id="notes" class="section" style="display: none;">
+                <h1 class="text-3xl font-bold text-center mb-8" style="color: #9c27b0;">Notes</h1>
+                <div class="feature-card">
+                    <h2 class="text-xl font-semibold mb-4">Create New Note</h2>
+                    <div class="mb-4">
+                        <input type="text" id="note-title" placeholder="Note Title" class="w-full p-2 border rounded mb-2">
+                        <textarea id="note-content" placeholder="Write your note here..." class="notes-textarea"></textarea>
+                        <button onclick="createNote()" class="mt-2 bg-purple-600 text-white px-4 py-2 rounded">Save Note</button>
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <h2 class="text-xl font-semibold mb-4">Your Notes</h2>
+                    <div id="notes-list" class="notes-container"></div>
+                </div>
+            </div>
+
+            <!-- Timer Section -->
+            <div id="timer" class="section" style="display: none;">
+                <h1 class="text-3xl font-bold text-center mb-8" style="color: #9c27b0;">Timer</h1>
+                <div class="feature-card">
+                    <h2 class="text-xl font-semibold mb-4">Study Timer</h2>
+                    <div class="timer-display">25:00</div>
+                    <div class="timer-controls text-center">
+                        <button onclick="startTimer()">Start</button>
+                        <button onclick="pauseTimer()">Pause</button>
+                        <button onclick="resetTimer()">Reset</button>
+                    </div>
+                </div>
+                <div class="study-tips">
+                    <h3>Study Tips</h3>
+                    <ul class="tips-list">
+                        <li class="tip-item">
+                            <span class="tip-icon">📚</span>
+                            <div class="tip-content">
+                                <div class="tip-title">Pomodoro Technique</div>
+                                <div class="tip-description">Study for 25 minutes, then take a 5-minute break. After 4 cycles, take a longer 15-30 minute break.</div>
+                            </div>
+                        </li>
+                        <li class="tip-item">
+                            <span class="tip-icon">🎯</span>
+                            <div class="tip-content">
+                                <div class="tip-title">Set Clear Goals</div>
+                                <div class="tip-description">Define what you want to achieve in each study session to stay focused and motivated.</div>
+                            </div>
+                        </li>
+                        <li class="tip-item">
+                            <span class="tip-icon">🧠</span>
+                            <div class="tip-content">
+                                <div class="tip-title">Active Recall</div>
+                                <div class="tip-description">Test yourself frequently instead of just re-reading material to improve retention.</div>
+                            </div>
+                        </li>
+                        <li class="tip-item">
+                            <span class="tip-icon">💧</span>
+                            <div class="tip-content">
+                                <div class="tip-title">Stay Hydrated</div>
+                                <div class="tip-description">Keep water nearby and take regular sips to maintain focus and energy levels.</div>
+                            </div>
+                        </li>
+                        <li class="tip-item">
+                            <span class="tip-icon">🔄</span>
+                            <div class="tip-content">
+                                <div class="tip-title">Mix Subjects</div>
+                                <div class="tip-description">Switch between different subjects to keep your brain engaged and prevent fatigue.</div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Chatbot Section -->
+            <div id="chatbot" class="section" style="display: none;">
+                <h1 class="text-3xl font-bold text-center mb-4" style="color: #9c27b0;">Chatbot</h1>
+                
+                <!-- External AI Assistant Banner -->
+                <div class="bg-gradient-to-r from-purple-600 to-pink-500 text-white p-4 rounded-xl mb-8 shadow-lg transform transition-all duration-300 hover:scale-105">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h2 class="text-xl font-bold mb-2">Try Our Advanced AI Assistant!</h2>
+                            <p class="text-white text-opacity-90">Get more personalized study help with our external AI tool</p>
+                        </div>
+                        <a href="https://poe.com/_Study-Buddy_123_qst" target="_blank" 
+                           class="bg-white text-purple-700 font-bold py-2 px-6 rounded-full shadow-md transition-all duration-300 hover:bg-purple-100 hover:shadow-xl flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            </svg>
+                            Launch Now
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="feature-card">
+                    <h2 class="text-xl font-semibold mb-4">Study Assistant</h2>
+                    <div class="chat-container" style="height: 400px; display: flex; flex-direction: column;">
+                        <div class="flex justify-between items-center mb-2">
+                            <div class="text-sm text-gray-500">StudyBuddy AI Assistant</div>
+                            <div class="flex items-center">
+                                <span class="text-sm text-gray-500 mr-2">Offline Mode</span>
+                                <label class="switch">
+                                    <input type="checkbox" id="offline-mode-toggle">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+                        <div id="chat-messages" class="flex-1 overflow-y-auto p-4 bg-gray-50 rounded-lg mb-4" style="border: 1px solid #e0e0e0;">
+                            <div class="chat-message bot">
+                                <div class="message-bubble bg-purple-100 p-3 rounded-lg inline-block max-w-3/4 mb-2">
+                                    <p>Hi there! I'm your StudyBuddy assistant. How can I help you with your studies today? 📚</p>
+                                </div>
+                            </div>
+                            <div class="chat-message bot">
+                                <div class="message-bubble bg-purple-100 p-3 rounded-lg inline-block max-w-3/4 mb-2">
+                                    <p>I'm currently in <strong>offline mode</strong>, which means I can answer basic study questions like "How can I improve my focus?" or "Explain the Pomodoro technique." For more advanced AI assistance, try our external AI tool by clicking the "Launch Now" button above!</p>
+                                </div>
+                            </div>
+                            <div class="chat-message bot">
+                                <div class="message-bubble bg-purple-100 p-3 rounded-lg inline-block max-w-3/4 mb-2">
+                                    <p>You can also try one of the quick questions below to see how I can help! 👇</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chat-input-container flex">
+                            <input type="text" id="chat-input" placeholder="Ask me anything about your studies..." 
+                                class="flex-1 p-3 border border-purple-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                            <button id="send-message" class="bg-purple-600 text-white px-4 py-2 rounded-r-lg hover:bg-purple-700 transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="feature-card mt-6">
+                    <h2 class="text-xl font-semibold mb-4">Quick Questions</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <button class="quick-question-btn bg-purple-50 hover:bg-purple-100 p-3 rounded-lg text-left text-purple-800 transition-colors">
+                            How can I improve my study focus?
+                        </button>
+                        <button class="quick-question-btn bg-purple-50 hover:bg-purple-100 p-3 rounded-lg text-left text-purple-800 transition-colors">
+                            Explain the Pomodoro technique
+                        </button>
+                        <button class="quick-question-btn bg-purple-50 hover:bg-purple-100 p-3 rounded-lg text-left text-purple-800 transition-colors">
+                            Give me a study plan for exams
+                        </button>
+                        <button class="quick-question-btn bg-purple-50 hover:bg-purple-100 p-3 rounded-lg text-left text-purple-800 transition-colors">
+                            How to take effective notes?
+                        </button>
+                        <button class="quick-question-btn bg-purple-50 hover:bg-purple-100 p-3 rounded-lg text-left text-purple-800 transition-colors">
+                            How can I improve my memory?
+                        </button>
+                        <button class="quick-question-btn bg-purple-50 hover:bg-purple-100 p-3 rounded-lg text-left text-purple-800 transition-colors">
+                            Tips for managing study stress
+                        </button>
+                        <button class="quick-question-btn bg-purple-50 hover:bg-purple-100 p-3 rounded-lg text-left text-purple-800 transition-colors">
+                            How to study math effectively?
+                        </button>
+                        <button class="quick-question-btn bg-purple-50 hover:bg-purple-100 p-3 rounded-lg text-left text-purple-800 transition-colors">
+                            Time management strategies
+                        </button>
+                    </div>
+                </div>
+                
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Navigation functionality
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.style.display = 'none';
+            });
+            
+            // Show selected section
+            document.getElementById(sectionId).style.display = 'block';
+            
+            // Update active nav item
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+            
+            // Initialize chatbot if chatbot section is selected
+            if (sectionId === 'chatbot' && !window.chatbotInitialized) {
+                initChatbot();
+                window.chatbotInitialized = true;
+            }
+        }
+
+        // Existing timer functionality
+        let timer;
+        let timeLeft = 25 * 60;
+        const timerDisplay = document.querySelector('.timer-display');
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function startTimer() {
+            if (!timer) {
+                // Record session start if not already started
+                if (!sessionStorage.getItem('timerSessionStarted')) {
+                    const studySessions = parseInt(localStorage.getItem('studyBuddySessions') || 0) + 1;
+                    localStorage.setItem('studyBuddySessions', studySessions);
+                    sessionStorage.setItem('timerSessionStarted', 'true');
+                    updateStudyStats();
+                }
+                
+                timer = setInterval(() => {
+                    if (timeLeft > 0) {
+                        timeLeft--;
+                        updateTimerDisplay();
+                    } else {
+                        clearInterval(timer);
+                        timer = null;
+                        
+                        // Record completed session time
+                        const studyHours = parseFloat(localStorage.getItem('studyBuddyHours') || 0);
+                        // 25 minutes = 0.4167 hours
+                        const newStudyHours = studyHours + 0.4167;
+                        localStorage.setItem('studyBuddyHours', newStudyHours.toFixed(2));
+                        
+                        updateStudyStats();
+                        alert('Time\'s up! Take a break!');
+                    }
+                }, 1000);
+            }
+        }
+
+        function pauseTimer() {
+            clearInterval(timer);
+            timer = null;
+        }
+
+        function resetTimer() {
+            clearInterval(timer);
+            timer = null;
+            timeLeft = 25 * 60;
+            updateTimerDisplay();
+        }
+
+        // To-Do List functionality
+        function addTodo() {
+            const input = document.getElementById('todo-input');
+            const todoList = document.getElementById('todo-list');
+            
+            if (input.value.trim() !== '') {
+                const todoId = 'todo-' + Date.now();
+                const todoItem = document.createElement('div');
+                todoItem.className = 'todo-item p-2 mb-2 bg-purple-50 rounded';
+                todoItem.id = todoId;
+                todoItem.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center flex-1">
+                            <input type="checkbox" onchange="toggleTodo(this)" class="mr-2">
+                            <span class="todo-text flex-1">${input.value}</span>
+                        </div>
+                        <div class="flex">
+                            <button onclick="editTodo('${todoId}')" class="text-blue-500 hover:text-blue-700 mr-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
+                                </svg>
+                            </button>
+                            <button onclick="deleteTodo('${todoId}')" class="text-red-500 hover:text-red-700">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                                    <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                todoList.appendChild(todoItem);
+                input.value = '';
+                saveTodos();
+            }
+        }
+
+        function toggleTodo(checkbox) {
+            const todoText = checkbox.parentElement.querySelector('.todo-text');
+            if (checkbox.checked) {
+                todoText.style.textDecoration = 'line-through';
+                todoText.style.color = '#888';
+            } else {
+                todoText.style.textDecoration = 'none';
+                todoText.style.color = '#000';
+            }
+            saveTodos();
+            updateStudyStats();
+        }
+        
+        function editTodo(todoId) {
+            const todoItem = document.getElementById(todoId);
+            const todoText = todoItem.querySelector('.todo-text');
+            const currentText = todoText.textContent;
+            
+            const newText = prompt('Edit task:', currentText);
+            if (newText !== null && newText.trim() !== '') {
+                todoText.textContent = newText;
+                saveTodos();
+            }
+      }
+        
+        function deleteTodo(todoId) {
+            if (confirm('Are you sure you want to delete this task?')) {
+                const todoItem = document.getElementById(todoId);
+                todoItem.remove();
+                saveTodos();
+            }
+        }
+        
+        function saveTodos() {
+            const todoList = document.getElementById('todo-list');
+            const todos = [];
+            
+            todoList.querySelectorAll('.todo-item').forEach(item => {
+                const text = item.querySelector('.todo-text').textContent;
+                const isCompleted = item.querySelector('input[type="checkbox"]').checked;
+                const id = item.id;
+                
+                todos.push({ id, text, isCompleted });
+            });
+            
+            localStorage.setItem('studyBuddyTodos', JSON.stringify(todos));
+        }
+        
+        function loadTodos() {
+            const todoList = document.getElementById('todo-list');
+            const savedTodos = localStorage.getItem('studyBuddyTodos');
+            
+            if (savedTodos) {
+                const todos = JSON.parse(savedTodos);
+                
+                todos.forEach(todo => {
+                    const todoItem = document.createElement('div');
+                    todoItem.className = 'todo-item p-2 mb-2 bg-purple-50 rounded';
+                    todoItem.id = todo.id;
+                    todoItem.innerHTML = `
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center flex-1">
+                                <input type="checkbox" onchange="toggleTodo(this)" class="mr-2" ${todo.isCompleted ? 'checked' : ''}>
+                                <span class="todo-text flex-1" style="${todo.isCompleted ? 'text-decoration: line-through; color: #888;' : ''}">${todo.text}</span>
+                            </div>
+                            <div class="flex">
+                                <button onclick="editTodo('${todo.id}')" class="text-blue-500 hover:text-blue-700 mr-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
+                                    </svg>
+                                </button>
+                                <button onclick="deleteTodo('${todo.id}')" class="text-red-500 hover:text-red-700">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                                        <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    todoList.appendChild(todoItem);
+                });
+            }
+        }
+        
+        // Streak Counter functionality
+        function loadStreak() {
+            const streakCount = localStorage.getItem('studyBuddyStreak') || 0;
+            document.getElementById('streak-count').textContent = streakCount;
+        }
+        
+        function incrementStreak() {
+            const streakElement = document.getElementById('streak-count');
+            let streak = parseInt(streakElement.textContent) || 0;
+            streak++;
+            streakElement.textContent = streak;
+            localStorage.setItem('studyBuddyStreak', streak);
+            
+            // Update study stats
+            updateStudyStats();
+        }
+        
+        function resetStreak() {
+            if (confirm('Are you sure you want to reset your streak?')) {
+                document.getElementById('streak-count').textContent = '0';
+                localStorage.setItem('studyBuddyStreak', 0);
+            }
+        }
+        
+        // Mood Tracker functionality
+        function trackMood(mood) {
+            const moodHistory = JSON.parse(localStorage.getItem('studyBuddyMoods')) || [];
+            const today = new Date();
+            
+            // Add new mood with timestamp
+            moodHistory.unshift({
+                mood: mood,
+                date: today.toISOString(),
+                formattedDate: today.toLocaleDateString('en-US', { 
+                    month: 'short', 
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                })
+            });
+            
+            // Keep only the last 10 moods
+            if (moodHistory.length > 10) {
+                moodHistory.pop();
+            }
+            
+            // Save to localStorage
+            localStorage.setItem('studyBuddyMoods', JSON.stringify(moodHistory));
+            
+            // Update display
+            displayMoodHistory();
+            
+            // Update study stats
+            updateStudyStats();
+        }
+        
+        function displayMoodHistory() {
+            const moodHistoryElement = document.getElementById('mood-history');
+            const moodHistory = JSON.parse(localStorage.getItem('studyBuddyMoods')) || [];
+            
+            moodHistoryElement.innerHTML = '';
+            
+            moodHistory.forEach(entry => {
+                const moodEntry = document.createElement('div');
+                moodEntry.className = 'bg-purple-50 rounded p-2 text-center';
+                moodEntry.innerHTML = `
+                    <div class="text-2xl">${entry.mood}</div>
+                    <div class="text-xs text-gray-500">${entry.formattedDate}</div>
+                `;
+                moodHistoryElement.appendChild(moodEntry);
+            });
+            
+            if (moodHistory.length === 0) {
+                moodHistoryElement.innerHTML = '<p class="text-gray-500 italic">No mood entries yet</p>';
+            }
+        }
+        
+        // Calendar functionality
+        let currentDate = new Date();
+        let currentMonth = currentDate.getMonth();
+        let currentYear = currentDate.getFullYear();
+        
+        function renderCalendar() {
+            const monthYearElement = document.getElementById('month-year');
+            const calendarDaysElement = document.getElementById('calendar-days');
+            
+            // Set month and year
+            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            monthYearElement.textContent = `${monthNames[currentMonth]} ${currentYear}`;
+            
+            // Clear previous days
+            calendarDaysElement.innerHTML = '';
+            
+            // Get first day of month and total days
+            const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+            
+            // Add empty cells for days before first day of month
+            for (let i = 0; i < firstDay; i++) {
+                const emptyCell = document.createElement('div');
+                emptyCell.className = 'h-8 w-8 rounded-full flex items-center justify-center text-gray-400';
+                calendarDaysElement.appendChild(emptyCell);
+            }
+            
+            // Add days of month
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayCell = document.createElement('div');
+                dayCell.className = 'h-8 w-8 rounded-full flex items-center justify-center cursor-pointer hover:bg-purple-100';
+                
+                // Check if this is today's date
+                const isToday = day === currentDate.getDate() && 
+                                currentMonth === currentDate.getMonth() && 
+                                currentYear === currentDate.getFullYear();
+                
+                if (isToday) {
+                    dayCell.classList.add('bg-purple-600', 'text-white');
+                }
+                
+                dayCell.textContent = day;
+                dayCell.addEventListener('click', () => markCalendarDay(dayCell, day));
+                calendarDaysElement.appendChild(dayCell);
+            }
+        }
+        
+        function markCalendarDay(dayCell, day) {
+            // Toggle marked status
+            if (dayCell.classList.contains('bg-purple-600')) {
+                if (!isToday(day)) {
+                    dayCell.classList.remove('bg-purple-600', 'text-white');
+                }
+            } else {
+                dayCell.classList.add('bg-purple-600', 'text-white');
+            }
+            
+            // Save marked days to localStorage
+            saveMarkedDays();
+        }
+        
+        function isToday(day) {
+            return day === currentDate.getDate() && 
+                   currentMonth === currentDate.getMonth() && 
+                   currentYear === currentDate.getFullYear();
+        }
+        
+        function saveMarkedDays() {
+            const markedDays = [];
+            document.querySelectorAll('#calendar-days .bg-purple-600').forEach(dayCell => {
+                if (dayCell.textContent) {
+                    markedDays.push({
+                        day: parseInt(dayCell.textContent),
+                        month: currentMonth,
+                        year: currentYear
+                    });
+                }
+            });
+            
+            localStorage.setItem('studyBuddyMarkedDays', JSON.stringify(markedDays));
+        }
+        
+        function loadMarkedDays() {
+            const savedMarkedDays = localStorage.getItem('studyBuddyMarkedDays');
+            
+            if (savedMarkedDays) {
+                const markedDays = JSON.parse(savedMarkedDays);
+                
+                markedDays.forEach(markedDay => {
+                    if (markedDay.month === currentMonth && markedDay.year === currentYear) {
+                        const dayCells = document.querySelectorAll('#calendar-days div');
+                        const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+                        const dayIndex = firstDay + markedDay.day - 1;
+                        
+                        if (dayCells[dayIndex] && !isToday(markedDay.day)) {
+                            dayCells[dayIndex].classList.add('bg-purple-600', 'text-white');
+                        }
+                    }
+                });
+            }
+        }
+        
+        function prevMonth() {
+            currentMonth--;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            renderCalendar();
+            loadMarkedDays();
+        }
+        
+        function nextMonth() {
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            renderCalendar();
+            loadMarkedDays();
+        }
+        
+        // Study Stats functionality
+        function updateStudyStats() {
+            // Get stats from localStorage
+            const studySessions = parseInt(localStorage.getItem('studyBuddySessions') || 0);
+            const studyHours = parseFloat(localStorage.getItem('studyBuddyHours') || 0).toFixed(1);
+            const streak = parseInt(localStorage.getItem('studyBuddyStreak') || 0);
+            
+            // Count completed tasks
+            const todos = JSON.parse(localStorage.getItem('studyBuddyTodos') || '[]');
+            const completedTasks = todos.filter(todo => todo.isCompleted).length;
+            
+            // Update UI
+            document.getElementById('total-study-sessions').textContent = studySessions;
+            document.getElementById('total-study-hours').textContent = studyHours;
+            document.getElementById('completed-tasks').textContent = completedTasks;
+            document.getElementById('current-streak').textContent = streak;
+            
+            // Calculate weekly goal progress (example: goal is 10 hours per week)
+            const weeklyGoal = 10; // 10 hours per week
+            const progress = Math.min(100, Math.round((studyHours / weeklyGoal) * 100));
+            document.getElementById('goal-percentage').textContent = `${progress}%`;
+            document.getElementById('goal-progress').style.width = `${progress}%`;
+        }
+
+        // Notes functionality
+        let notes = JSON.parse(localStorage.getItem('notes')) || [];
+
+        function createNote() {
+            const title = document.getElementById('note-title').value.trim();
+            const content = document.getElementById('note-content').value.trim();
+            
+            if (title && content) {
+                const note = {
+                    id: Date.now(),
+                    title: title,
+                    content: content,
+                    date: new Date().toLocaleDateString()
+                };
+                
+                notes.unshift(note); // Add new note at the beginning
+                saveNotes();
+                displayNotes();
+                
+                // Clear input fields
+                document.getElementById('note-title').value = '';
+                document.getElementById('note-content').value = '';
+            } else {
+                alert('Please enter both title and content for your note.');
+            }
+        }
+
+        function displayNotes() {
+            const notesList = document.getElementById('notes-list');
+            notesList.innerHTML = '';
+            
+            if (notes.length === 0) {
+                notesList.innerHTML = '<p class="text-center text-gray-600">No notes available. Create a new one!</p>';
+                return;
+            }
+            
+            notes.forEach(note => {
+                const noteElement = document.createElement('div');
+                noteElement.className = 'note-card';
+                noteElement.innerHTML = `
+                    <div class="note-header">
+                        <div class="note-title">${note.title}</div>
+                        <div class="note-date">${note.date}</div>
+                    </div>
+                    <div class="note-content">${note.content}</div>
+                    <div class="note-actions">
+                        <button onclick="editNote(${note.id})" class="note-button edit">Edit</button>
+                        <button onclick="deleteNote(${note.id})" class="note-button delete">Delete</button>
+                    </div>
+                `;
+                notesList.appendChild(noteElement);
+            });
+        }
+
+        function editNote(id) {
+            const note = notes.find(n => n.id === id);
+            if (note) {
+                document.getElementById('note-title').value = note.title;
+                document.getElementById('note-content').value = note.content;
+                
+                // Remove the note being edited
+                notes = notes.filter(n => n.id !== id);
+                saveNotes();
+                displayNotes();
+            }
+        }
+
+        function deleteNote(id) {
+            if (confirm('Are you sure you want to delete this note?')) {
+                notes = notes.filter(n => n.id !== id);
+                saveNotes();
+                displayNotes();
+            }
+        }
+
+        function saveNotes() {
+            localStorage.setItem('notes', JSON.stringify(notes));
+        }
+
+        // Load saved data on page load
+        window.onload = function() {
+            // Initialize todo list
+            loadTodos();
+            
+            // Initialize streak counter
+            loadStreak();
+            
+            // Initialize mood tracker
+            displayMoodHistory();
+            
+            // Initialize calendar
+            renderCalendar();
+            loadMarkedDays();
+            
+            // Initialize motivational quotes
+            displayRandomQuote();
+            
+            // Initialize study stats
+            updateStudyStats();
+            
+            // Initialize existing components
+            displayNotes();
+            displayFlashcards();
+        };
+
+        // Flashcards functionality
+        let flashcards = JSON.parse(localStorage.getItem('flashcards')) || [];
+
+        function addFlashcard() {
+            const question = document.getElementById('flashcard-question').value.trim();
+            const answer = document.getElementById('flashcard-answer').value.trim();
+            
+            if (question && answer) {
+                const flashcard = {
+                    id: Date.now(),
+                    question: question,
+                    answer: answer
+                };
+                
+                flashcards.push(flashcard);
+                saveFlashcards();
+                displayFlashcards();
+                
+                // Clear input fields
+                document.getElementById('flashcard-question').value = '';
+                document.getElementById('flashcard-answer').value = '';
+            }
+        }
+
+        function displayFlashcards() {
+            const flashcardsList = document.getElementById('flashcards-list');
+            flashcardsList.innerHTML = '';
+            
+            if (flashcards.length === 0) {
+                flashcardsList.innerHTML = '<p class="text-center text-gray-600">No flashcards available. Create a new one!</p>';
+                return;
+            }
+            
+            const gridContainer = document.createElement('div');
+            gridContainer.className = 'flashcards-grid';
+            
+            flashcards.forEach(flashcard => {
+                const flashcardElement = createFlashcardElement(flashcard);
+                gridContainer.appendChild(flashcardElement);
+            });
+            
+            flashcardsList.appendChild(gridContainer);
+        }
+
+        function createFlashcardElement(flashcard) {
+            const flashcardElement = document.createElement('div');
+            flashcardElement.className = 'flashcard';
+            
+            // Create the main card structure
+            const cardContainer = document.createElement('div');
+            cardContainer.className = 'relative w-full h-full';
+            
+            // Create the inner card that will flip
+            const cardInner = document.createElement('div');
+            cardInner.className = 'flashcard-inner';
+            
+            // Create front side
+            const cardFront = document.createElement('div');
+            cardFront.className = 'flashcard-front';
+            const frontContent = document.createElement('div');
+            frontContent.className = 'flashcard-content';
+            frontContent.textContent = flashcard.question;
+            cardFront.appendChild(frontContent);
+            
+            // Create back side
+            const cardBack = document.createElement('div');
+            cardBack.className = 'flashcard-back';
+            const backContent = document.createElement('div');
+            backContent.className = 'flashcard-content';
+            backContent.textContent = flashcard.answer;
+            cardBack.appendChild(backContent);
+            
+            // Add front and back to inner card
+            cardInner.appendChild(cardFront);
+            cardInner.appendChild(cardBack);
+            
+            // Create controls
+            const controls = document.createElement('div');
+            controls.className = 'flashcard-controls';
+            controls.innerHTML = `
+                <button class="control-button edit" onclick="event.stopPropagation(); editFlashcard(${flashcard.id})">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                    Edit
+                </button>
+                <button class="control-button delete" onclick="event.stopPropagation(); deleteFlashcard(${flashcard.id})">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                    Delete
+                </button>
+            `;
+            
+            // Add everything to the card container
+            cardContainer.appendChild(cardInner);
+    cardContainer.appendChild(controls);
+            flashcardElement.appendChild(cardContainer);
+            
+            // Add click event to flip the card
+            cardInner.addEventListener('click', () => {
+                        flashcardElement.classList.toggle('flipped');
+            });
+            
+            return flashcardElement;
+        }
+
+        function editFlashcard(id) {
+            // Stop event propagation to prevent flipping the card
+            event.stopPropagation();
+            
+            const flashcard = flashcards.find(f => f.id === id);
+            if (flashcard) {
+                // Create modal overlay
+                const modalOverlay = document.createElement('div');
+                modalOverlay.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+                
+                // Create modal content
+                modalOverlay.innerHTML = `
+                    <div class="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+                        <h3 class="text-xl font-semibold mb-4 text-purple-600">Edit Flashcard</h3>
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="edit-question">
+                                Question
+                            </label>
+                            <textarea id="edit-question" class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-purple-600" rows="3">${flashcard.question}</textarea>
+                        </div>
+                        <div class="mb-6">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="edit-answer">
+                                Answer
+                            </label>
+                            <textarea id="edit-answer" class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-purple-600" rows="3">${flashcard.answer}</textarea>
+                        </div>
+                        <div class="flex justify-end">
+                            <button id="cancel-edit" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded mr-2">
+                                Cancel
+                            </button>
+                            <button id="save-edit" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded">
+                                Save Changes
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                // Add modal to body
+                document.body.appendChild(modalOverlay);
+                
+                // Add event listeners
+                document.getElementById('cancel-edit').addEventListener('click', () => {
+                    document.body.removeChild(modalOverlay);
+                });
+                
+                document.getElementById('save-edit').addEventListener('click', () => {
+                    const newQuestion = document.getElementById('edit-question').value.trim();
+                    const newAnswer = document.getElementById('edit-answer').value.trim();
+                    
+                    if (newQuestion && newAnswer) {
+                                flashcard.question = newQuestion;
+                        flashcard.answer = newAnswer;
+                        saveFlashcards();
+                        displayFlashcards();
+                    }
+                    
+                    document.body.removeChild(modalOverlay);
+                });
+            }
+        }
+
+        function deleteFlashcard(id) {
+            // Stop event propagation to prevent flipping the card
+            event.stopPropagation();
+            
+            // Create modal overlay
+            const modalOverlay = document.createElement('div');
+            modalOverlay.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+            
+            // Create modal content
+            modalOverlay.innerHTML = `
+                <div class="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+                    <h3 class="text-xl font-semibold mb-4 text-red-600">Delete Flashcard</h3>
+                    <p class="mb-6 text-gray-700">Are you sure you want to delete this flashcard? This action cannot be undone.</p>
+                    <div class="flex justify-end">
+                        <button id="cancel-delete" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded mr-2">
+                            Cancel
+                        </button>
+                        <button id="confirm-delete" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                            Delete
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            // Add modal to body
+            document.body.appendChild(modalOverlay);
+            
+            // Add event listeners
+            document.getElementById('cancel-delete').addEventListener('click', () => {
+                document.body.removeChild(modalOverlay);
+            });
+            
+            document.getElementById('confirm-delete').addEventListener('click', () => {
+                flashcards = flashcards.filter(f => f.id !== id);
+                saveFlashcards();
+                displayFlashcards();
+                document.body.removeChild(modalOverlay);
+            });
+        }
+
+        function saveFlashcards() {
+            localStorage.setItem('flashcards', JSON.stringify(flashcards));
+        }
+
+        // Motivational quotes functionality
+        const quotes = [
+            {
+                text: "Success is not final, failure is not fatal: it is the courage to continue that counts.",
+                author: "Winston Churchill"
+            },
+            {
+                text: "The only way to do great work is to love what you do.",
+                author: "Steve Jobs"
+            },
+            {
+                text: "Believe you can and you're halfway there.",
+                author: "Theodore Roosevelt"
+            },
+            {
+                text: "Don't watch the clock; do what it does. Keep going.",
+                author: "Sam Levenson"
+            },
+            {
+                text: "The future belongs to those who believe in the beauty of their dreams.",
+                author: "Eleanor Roosevelt"
+            },
+            {
+                text: "You are never too old to set another goal or to dream a new dream.",
+                author: "C.S. Lewis"
+            },
+            {
+                text: "The secret of getting ahead is getting started.",
+                author: "Mark Twain"
+            },
+            {
+                text: "Success is walking from failure to failure with no loss of enthusiasm.",
+                author: "Winston Churchill"
+            },
+            {
+                text: "The only limit to our realization of tomorrow is our doubts of today.",
+                author: "Franklin D. Roosevelt"
+            },
+            {
+                text: "You don't have to be great to start, but you have to start to be great.",
+                author: "Zig Ziglar"
+            }
+        ];
+
+        function displayRandomQuote() {
+            const randomIndex = Math.floor(Math.random() * quotes.length);
+            const quote = quotes[randomIndex];
+            document.getElementById('quote-text').textContent = `"${quote.text}"`;
+            document.getElementById('quote-author').textContent = `- ${quote.author}`;
+        }
+        
+        // Chatbot functionality
+        let currentConversationId = null;
+        
+        // Flag to track offline mode - set to false to use the OpenAI API
+        let isOfflineMode = false;
+        
+        function initChatbot() {
+            // Set up offline mode toggle
+            const offlineModeToggle = document.getElementById('offline-mode-toggle');
+            // Set the toggle to unchecked by default (online mode)
+            offlineModeToggle.checked = false;
+            
+            offlineModeToggle.addEventListener('change', function() {
+                isOfflineMode = this.checked;
+                const statusMessage = isOfflineMode 
+                    ? "Switched to offline mode. I'll respond with pre-programmed answers to common study questions. For more advanced help, try our external AI tool!"
+                    : "Switched to online mode. Connecting to AI service for more personalized responses.";
+                
+                addMessageToChat('bot', statusMessage);
+                
+                // If switching to online mode, warn the user that it might not work
+                if (!isOfflineMode) {
+                    setTimeout(() => {
+                        addMessageToChat('bot', "Note: Online mode requires a running backend server with a valid OpenAI API key. If you encounter errors, please switch back to offline mode.");
+                    }, 1000);
+                }
+            });
+            
+            // Create a new conversation when the chatbot is initialized
+            if (!isOfflineMode) {
+                fetch('http://localhost:8080/api/chatbot/conversation/new', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    currentConversationId = data.conversationId;
+                    console.log('New conversation created with ID:', currentConversationId);
+                })
+                .catch(error => {
+                    console.error('Error creating new conversation:', error);
+                    // Fallback to a local conversation if API fails
+                    currentConversationId = 'local-' + Date.now();
+                    // Auto-switch to offline mode if server is unreachable
+                    offlineModeToggle.checked = true;
+                    isOfflineMode = true;
+                    addMessageToChat('bot', "I couldn't connect to the server, so I've switched to offline mode. In offline mode, I can still help with basic study questions, but my responses will be limited. You can still use all other features of StudyBuddy without any issues! 😊");
+                    
+                    // Add a follow-up message with alternative options
+                    setTimeout(() => {
+                        addMessageToChat('bot', "For more advanced AI assistance, you can try our external AI tool by clicking the 'Launch Now' button above, or ask me simple study-related questions here.");
+                    }, 1500);
+                });
+            } else {
+                // Use local conversation ID in offline mode
+                currentConversationId = 'local-' + Date.now();
+            }
+            
+            // Set up event listeners
+            const chatInput = document.getElementById('chat-input');
+            const sendButton = document.getElementById('send-message');
+            
+            // Send message when button is clicked
+            sendButton.addEventListener('click', sendChatMessage);
+            
+            // Send message when Enter key is pressed
+            chatInput.addEventListener('keypress', function(event) {
+                if (event.key === 'Enter') {
+                    sendChatMessage();
+                }
+            });
+            
+            // Set up quick question buttons
+            document.querySelectorAll('.quick-question-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const question = this.textContent.trim();
+                    chatInput.value = question;
+                    sendChatMessage();
+                });
+            });
+        }
+        
+        function sendChatMessage() {
+            const chatInput = document.getElementById('chat-input');
+            const message = chatInput.value.trim();
+            
+            if (!message) return;
+            
+            // Add user message to chat
+            addMessageToChat('user', message);
+            
+            // Clear input
+            chatInput.value = '';
+            
+            // Show typing indicator
+            showTypingIndicator();
+            
+            // Define fallback responses for offline mode or errors
+            const fallbackResponses = {
+                'hello': 'Hello! I\'m StudyBuddy, your learning assistant. How can I help you with your studies today?',
+                'hi': 'Hello! I\'m StudyBuddy, your learning assistant. How can I help you with your studies today?',
+                'hey': 'Hello! I\'m StudyBuddy, your learning assistant. How can I help you with your studies today?',
+                'how are you': 'I\'m just a program, but I\'m ready to help you with your studies! What would you like assistance with?',
+                'thank': 'You\'re welcome! Feel free to ask if you need more help with your studies.',
+                'bye': 'Goodbye! Good luck with your studies. Come back anytime you need help!',
+                'pomodoro': 'The Pomodoro Technique is a time management method where you work for 25 minutes, then take a 5-minute break. After 4 cycles, take a longer break of 15-30 minutes. It helps maintain focus and prevent burnout.',
+                'focus': 'To improve focus: 1) Remove distractions like phones, 2) Use the Pomodoro Technique, 3) Take short breaks, 4) Stay hydrated, 5) Get enough sleep, and 6) Consider background white noise or instrumental music.',
+                'study plan': 'For an effective exam study plan: 1) Start early, 2) Break material into small chunks, 3) Use active recall techniques, 4) Take practice tests, 5) Teach concepts to others, 6) Review regularly, and 7) Get proper rest before the exam.',
+                'note': 'For effective note-taking: 1) Use the Cornell method (questions on left, notes on right, summary at bottom), 2) Focus on key concepts rather than every word, 3) Use abbreviations and symbols, 4) Review and organize notes within 24 hours, and 5) Consider mind maps for visual learning.',
+                'memory': 'To improve memory retention: 1) Use spaced repetition, 2) Create associations and mnemonics, 3) Teach the material to someone else, 4) Get adequate sleep, 5) Use multiple senses when learning, and 6) Practice active recall instead of passive re-reading.',
+                'motivat': 'When you\'re feeling unmotivated, try: 1) Setting small, achievable goals, 2) Rewarding yourself after study sessions, 3) Finding a study buddy for accountability, 4) Changing your study environment, and 5) Remembering your long-term goals and why they matter to you.',
+                'exam': 'Exam preparation tips: 1) Create a study schedule, 2) Identify key topics and prioritize them, 3) Use past papers for practice, 4) Form study groups for difficult subjects, 5) Take care of your physical health with proper sleep and nutrition, and 6) Use active recall techniques instead of passive reading.',
+                'stress': 'To manage study stress: 1) Practice deep breathing exercises, 2) Break large tasks into smaller ones, 3) Take regular breaks, 4) Exercise regularly, 5) Maintain a healthy sleep schedule, 6) Talk to someone about your feelings, and 7) Remember that perfection isn\'t necessary for success.',
+                'time': 'Time management tips: 1) Use a planner or digital calendar, 2) Prioritize tasks using the Eisenhower Matrix (urgent/important), 3) Break large projects into smaller tasks, 4) Set specific goals for each study session, 5) Eliminate distractions during focused work time, and 6) Use the Pomodoro Technique.',
+                'read': 'Effective reading strategies: 1) Preview the material before reading (skim headings, images), 2) Ask questions about the content, 3) Read actively by highlighting and taking notes, 4) Summarize key points in your own words, and 5) Review the material periodically to reinforce memory.',
+                'math': 'Math study tips: 1) Practice regularly with different problem types, 2) Focus on understanding concepts rather than memorizing formulas, 3) Work through examples step-by-step, 4) Create a formula sheet for reference, 5) Teach concepts to others to solidify understanding, and 6) Use online resources for additional explanations.',
+                'science': 'Science study tips: 1) Connect new information to existing knowledge, 2) Create visual aids like diagrams and charts, 3) Use flashcards for terminology, 4) Apply concepts to real-world examples, 5) Participate in hands-on experiments when possible, and 6) Explain processes in your own words.',
+                'language': 'Language learning tips: 1) Practice daily, even if just for 15 minutes, 2) Use spaced repetition for vocabulary, 3) Immerse yourself with media in the target language, 4) Find a language exchange partner, 5) Focus on high-frequency words first, and 6) Don\'t be afraid to make mistakes.'
+            };
+            
+            // If in offline mode, use local responses
+            if (isOfflineMode) {
+                setTimeout(() => {
+                    // Remove typing indicator
+                    removeTypingIndicator();
+                    
+                    // Try to match the user's message with a fallback response
+                    let offlineResponse = 'I\'m in offline mode with limited responses. Try asking about study techniques, focus, memory, motivation, time management, or specific subjects like math, science, or languages.';
+                    const userMessage = message.toLowerCase();
+                    
+                    // Check for keyword matches
+                    let matched = false;
+                    for (const [keyword, response] of Object.entries(fallbackResponses)) {
+                        if (userMessage.includes(keyword)) {
+                            offlineResponse = response;
+                            matched = true;
+                            break;
+                        }
+                    }
+                    
+                    // If no match was found, provide a helpful suggestion
+                    if (!matched) {
+                        // List of available topics
+                        const topics = ['focus', 'memory', 'motivation', 'pomodoro', 'study plan', 'notes', 'time management', 'stress', 'exams', 'reading', 'math', 'science', 'language'];
+                        
+                        offlineResponse = `I don't have specific information about that in offline mode. Here are some topics I can help with: ${topics.join(', ')}. Try asking about one of these!`;
+                    }
+                    
+                    // Add offline response
+                    addMessageToChat('bot', offlineResponse);
+                }, 1000); // Simulate thinking time
+                
+                return;
+            }
+            
+            // If online, send message to API
+            fetch('http://localhost:8080/api/chatbot/send', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    message: message,
+                    conversationId: currentConversationId
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Remove typing indicator
+                removeTypingIndicator();
+                
+                // Check if the response has the expected format
+                if (data && data.content) {
+                    // Add bot response to chat
+                    addMessageToChat('bot', data.content);
+                } else {
+                    console.error('Unexpected response format:', data);
+                    throw new Error('Unexpected response format from server');
+                }
+            })
+            .catch(error => {
+                console.error('Error sending message:', error);
+                
+                // Remove typing indicator
+                removeTypingIndicator();
+                
+                // Try to match the user's message with a fallback response
+                let fallbackResponse = 'Sorry, I encountered an error connecting to the server. Please try again later or switch to offline mode.';
+                const userMessage = message.toLowerCase();
+                
+                for (const [keyword, response] of Object.entries(fallbackResponses)) {
+                    if (userMessage.includes(keyword)) {
+                        fallbackResponse = response;
+                        break;
+                    }
+                }
+                
+                // Add fallback response
+                addMessageToChat('bot', fallbackResponse);
+                
+                // Suggest switching to offline mode
+                setTimeout(() => {
+                    addMessageToChat('bot', 'It seems I\'m having trouble connecting to the server. You might want to switch to offline mode using the toggle above.');
+                }, 1000);
+            });
+        }
+        
+        function addMessageToChat(role, content) {
+            const chatMessages = document.getElementById('chat-messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `chat-message ${role}`;
+            
+            const bubbleClass = role === 'user' 
+                ? 'message-bubble bg-purple-600 text-white p-3 rounded-lg inline-block max-w-3/4 mb-2 ml-auto' 
+                : 'message-bubble bg-purple-100 p-3 rounded-lg inline-block max-w-3/4 mb-2';
+            
+            const alignClass = role === 'user' ? 'text-right' : '';
+            
+            messageDiv.innerHTML = `
+                <div class="${alignClass} w-full">
+                    <div class="${bubbleClass}">
+                        <p>${content}</p>
+                    </div>
+                </div>
+            `;
+            
+            chatMessages.appendChild(messageDiv);
+            
+            // Scroll to bottom
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        function showTypingIndicator() {
+            const chatMessages = document.getElementById('chat-messages');
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'chat-message bot typing-indicator';
+            typingDiv.innerHTML = `
+                <div class="message-bubble bg-purple-100 p-3 rounded-lg inline-block max-w-3/4 mb-2">
+                    <div class="typing">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+            `;
+            
+            chatMessages.appendChild(typingDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        function removeTypingIndicator() {
+            const typingIndicator = document.querySelector('.typing-indicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+        
+        // Add CSS for typing indicator and toggle switch
+        const style = document.createElement('style');
+        style.textContent = `
+            .typing {
+                display: flex;
+                align-items: center;
+                column-gap: 6px;
+                padding: 0 5px;
+            }
+            
+            .typing span {
+                height: 8px;
+                width: 8px;
+                background-color: #9c27b0;
+                border-radius: 50%;
+                display: block;
+                opacity: 0.4;
+            }
+            
+            .typing span:nth-child(1) {
+                animation: pulse 1s infinite ease-in-out;
+            }
+            
+            .typing span:nth-child(2) {
+                animation: pulse 1s infinite ease-in-out 0.2s;
+            }
+            
+            .typing span:nth-child(3) {
+                animation: pulse 1s infinite ease-in-out 0.4s;
+            }
+            
+            @keyframes pulse {
+                0%, 100% {
+                    transform: scale(1);
+                    opacity: 0.4;
+                }
+                50% {
+                    transform: scale(1.2);
+                    opacity: 0.8;
+                }
+            }
+            
+            .chat-message.user {
+                display: flex;
+                justify-content: flex-end;
+                margin-bottom: 10px;
+            }
+            
+            .chat-message.bot {
+                display: flex;
+                justify-content: flex-start;
+                margin-bottom: 10px;
+            }
+            
+            /* Toggle Switch */
+            .switch {
+                position: relative;
+                display: inline-block;
+                width: 40px;
+                height: 20px;
+            }
+            
+            .switch input {
+                opacity: 0;
+                width: 0;
+                height: 0;
+            }
+            
+            .slider {
+                position: absolute;
+                cursor: pointer;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: #ccc;
+                transition: .4s;
+            }
+            
+            .slider:before {
+                position: absolute;
+                content: "";
+                height: 16px;
+                width: 16px;
+                left: 2px;
+                bottom: 2px;
+                background-color: white;
+                transition: .4s;
+            }
+            
+            input:checked + .slider {
+                background-color: #9c27b0;
+            }
+            
+            input:focus + .slider {
+                box-shadow: 0 0 1px #9c27b0;
+            }
+            
+            input:checked + .slider:before {
+                transform: translateX(20px);
+            }
+            
+            .slider.round {
+                border-radius: 34px;
+            }
+            
+            .slider.round:before {
+                border-radius: 50%;
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html> 
