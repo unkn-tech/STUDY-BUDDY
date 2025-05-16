@@ -62,7 +62,8 @@ Study Buddy is a comprehensive learning management application designed to enhan
 - Pomodoro timer for focused study sessions
 
 ## Contributors
-- [Your Name/Team Members]
+- Bhavkirat Kaur Khurana-Project Lead
+- Bhanu Reddy-Contributer
 
 ## License
 [Your License Information]
