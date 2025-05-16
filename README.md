@@ -1,4 +1,4 @@
-# STUDY BUDDY
+# STUDY BUDDY 💻
 
 ## Project Aim
 Study Buddy is a comprehensive learning management application designed to enhance the studying experience for students. The primary aim of this project is to provide an all-in-one platform that helps students organize their study materials, manage their tasks, and improve their learning efficiency through various interactive tools.
